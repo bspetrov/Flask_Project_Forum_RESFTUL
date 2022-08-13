@@ -6,6 +6,8 @@ from flask_httpauth import HTTPTokenAuth
 from jwt import ExpiredSignatureError, InvalidTokenError
 from werkzeug.exceptions import Unauthorized
 
+from models import ForumUserModel
+
 
 class AuthManager:
     @staticmethod
@@ -26,13 +28,13 @@ class AuthManager:
             raise Unauthorized("Invalid token")
 
 
-auth = HTTPTokenAuth()
+auth = HTTPTokenAuth(scheme='Bearer')
 
 
 @auth.verify_token
-def verify(token):
+def verify_token(token):
     try:
-        user_id, user_type = AuthManager.decode_token(token)
-        return eval(f"{user_type}.query.filter_by(id={user_id}).first()")
-    except Exception as ex:
-        raise Unauthorized("Invalid or missing token")
+        user_id = AuthManager.decode_token(token)
+        return ForumUserModel.query.filter_by(id=user_id).first()
+    except Exception:
+        return 400

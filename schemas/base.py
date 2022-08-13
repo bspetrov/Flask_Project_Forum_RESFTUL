@@ -1,4 +1,7 @@
 from marshmallow import Schema, fields, validate
+from marshmallow_enum import EnumField
+
+from models import ThreadCategories
 
 
 class AuthBase(Schema):
@@ -8,4 +11,5 @@ class AuthBase(Schema):
 
 class ThreadBase(Schema):
     title = fields.Str(required=True)
+    category = EnumField(ThreadCategories, by_value=True)
     description = fields.Str(required=True)

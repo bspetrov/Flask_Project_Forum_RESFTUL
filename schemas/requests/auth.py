@@ -1,4 +1,4 @@
-from marshmallow import fields, Schema, validate
+from marshmallow import fields, validate
 
 from schemas.base import AuthBase
 

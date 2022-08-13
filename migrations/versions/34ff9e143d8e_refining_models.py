@@ -1,8 +1,8 @@
-"""Initial migration
+"""Refining models
 
-Revision ID: 0472e2a9c3fa
+Revision ID: 34ff9e143d8e
 Revises: 
-Create Date: 2022-08-07 02:46:06.381968
+Create Date: 2022-08-13 21:15:52.072507
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0472e2a9c3fa'
+revision = '34ff9e143d8e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -43,7 +43,9 @@ def upgrade():
     op.create_table('threads',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=300), nullable=False),
+    sa.Column('category', sa.Enum('no_category', 'gaming', 'movies', 'books', 'politics', 'social_media', 'tech_help', name='threadcategories'), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
+    sa.Column('attachment', sa.String(length=300), nullable=False),
     sa.Column('status', sa.Enum('open', 'closed', name='threadstate'), nullable=False),
     sa.Column('created_on', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.Column('likes', sa.Integer(), nullable=False),

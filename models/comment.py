@@ -9,4 +9,3 @@ class ThreadCommentModel(db.Model):
     likes = db.Column(db.Integer, nullable=False, default=0)
     forum_user_id = db.Column(db.Integer, db.ForeignKey("forum_users.id"), nullable=False)
     thread_id = db.Column(db.Integer, db.ForeignKey("threads.id"), nullable=False)
-    thread = db.relationship("ThreadModel")
