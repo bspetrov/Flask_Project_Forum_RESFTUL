@@ -7,12 +7,13 @@ from jwt import ExpiredSignatureError, InvalidTokenError
 from werkzeug.exceptions import Unauthorized
 
 from models import ForumUserModel
+from models import ForumManagerModel
 
 
 class AuthManager:
     @staticmethod
     def encode_token(user):
-        payload = {"sub": user.id, "exp": datetime.utcnow() + timedelta(minutes=180)}
+        payload = {"sub": user.id, "exp": datetime.utcnow() + timedelta(minutes=180), "type": user.__class__.__name__}
         return jwt.encode(payload, key=config("JWT_SECRET"), algorithm="HS256")
 
     @staticmethod
@@ -20,8 +21,8 @@ class AuthManager:
         if not token:
             raise Unauthorized("Missing token!")
         try:
-            payload = jwt.decode(token, key=config("JWT_SECRET"), algorithms=["HS256"])
-            return payload["sub"]
+            info = jwt.decode(jwt=token, key=config("JWT_SECRET"), algorithms=["HS256"])
+            return info["sub"], info["type"]
         except ExpiredSignatureError:
             raise Unauthorized("Token expired!")
         except InvalidTokenError:
@@ -34,7 +35,7 @@ auth = HTTPTokenAuth(scheme='Bearer')
 @auth.verify_token
 def verify_token(token):
     try:
-        user_id = AuthManager.decode_token(token)
-        return ForumUserModel.query.filter_by(id=user_id).first()
-    except Exception:
-        return 400
+        user_id, type_user = AuthManager.decode_token(token)
+        return eval(f"{type_user}.query.filter_by(id={user_id}).first()")
+    except Exception as ex:
+        return ex

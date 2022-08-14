@@ -13,3 +13,4 @@ class ThreadBase(Schema):
     title = fields.Str(required=True)
     category = EnumField(ThreadCategories, by_value=True)
     description = fields.Str(required=True)
+    likes = fields.Str(required=True)

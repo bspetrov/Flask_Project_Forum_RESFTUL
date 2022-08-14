@@ -14,6 +14,7 @@ from utils.decorators import validate_schema, permission_required
 
 class SingleThreadResource(Resource):
     def get(self, id):
+
         try:
             thread = ThreadManager.get_thread(id)
             return ThreadSchemaResponse().dump(thread), status.HTTP_200_OK
@@ -25,6 +26,7 @@ class SingleThreadResource(Resource):
 class AllThreadsResource(Resource):
     @auth.login_required
     def get(self):
+
         try:
             current_user = auth.current_user()
             thread = ThreadManager.get_all_threads(current_user.id)
@@ -38,6 +40,7 @@ class CreateThreadResource(Resource):
     @auth.login_required
     @validate_schema(ThreadSchemaRequest)
     def post(self):
+
         data = request.get_json()
         current_user = auth.current_user()
         new_thread = ThreadManager.create_thread(data, current_user)
@@ -47,15 +50,28 @@ class CreateThreadResource(Resource):
 class UpdateThreadResource(Resource):
     @auth.login_required()
     def put(self, id):
+
         data = request.get_json()
         modified_thread = ThreadManager.update_thread(id, data)
         return ThreadSchemaResponse().dump(modified_thread), status.HTTP_200_OK
+
 
 class UpdateThreadStatusResource(Resource):
     @auth.login_required
     @permission_required(UserRole.manager)
     def put(self, id):
-        pass
+        data = request.get_json()
+        status = data["status"]
+        modified_thread = ThreadManager.update_thread_status(id, status)
+        return modified_thread
+
+
+class LikeUnlikeThreadResource(Resource):
+    @auth.login_required
+    def put(self, action, id):
+        liked_thread = ThreadManager.thread_like_unlike(action, id)
+        return ThreadSchemaResponse().dump(liked_thread), status.HTTP_200_OK
+
 
 
 

@@ -1,6 +1,7 @@
-from resources.auth import RegisterForumUserResource, LoginForumUserResource, LoginForumManagerResource
+from resources.auth import RegisterForumUserResource, LoginForumUserResource, \
+    LoginForumManagerResource
 from resources.thread import CreateThreadResource, SingleThreadResource, AllThreadsResource, UpdateThreadResource, \
-    UpdateThreadStatusResource
+    UpdateThreadStatusResource, LikeUnlikeThreadResource
 
 routes = (
     (RegisterForumUserResource, "/register/"),
@@ -9,5 +10,6 @@ routes = (
     (CreateThreadResource, "/thread/create/"),
     (SingleThreadResource, "/thread/get/<int:id>/"),
     (UpdateThreadResource, "/thread/update/<int:id>/"),
-    (UpdateThreadStatusResource, "/thread/update-status/<int:id>/")
+    (UpdateThreadStatusResource, "/thread/update-status/<int:id>/"),
+    (LikeUnlikeThreadResource, "/thread/<action>/<int:id>/")
 )

@@ -26,4 +26,3 @@ def permission_required(role):
             return func(*args, **kwargs)
         return wrapper
     return decorated_function
-
