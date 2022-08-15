@@ -1,15 +1,17 @@
-from resources.auth import RegisterForumUserResource, LoginForumUserResource, \
-    LoginForumManagerResource
-from resources.thread import CreateThreadResource, SingleThreadResource, AllThreadsResource, UpdateThreadResource, \
-    UpdateThreadStatusResource, LikeUnlikeThreadResource
+from resources.auth import RegisterUserResource, \
+    LoginUserResource
+from resources.comment import MainCommentResource
+from resources.thread import \
+    UpdateThreadStatusResource, LikeUnlikeThreadResource, CommentThreadResource, MainThreadResource, \
+    SingleThreadActionResource
 
 routes = (
-    (RegisterForumUserResource, "/register/"),
-    (LoginForumUserResource, "/login/"),
-    (LoginForumManagerResource, "/login/manager/"),
-    (CreateThreadResource, "/thread/create/"),
-    (SingleThreadResource, "/thread/get/<int:id>/"),
-    (UpdateThreadResource, "/thread/update/<int:id>/"),
-    (UpdateThreadStatusResource, "/thread/update-status/<int:id>/"),
-    (LikeUnlikeThreadResource, "/thread/<action>/<int:id>/")
+    (RegisterUserResource, "/register/"),
+    (LoginUserResource, "/login/<type>/"),
+    (MainThreadResource, "/thread/"),
+    (SingleThreadActionResource, "/thread/<int:id>/"),
+    (UpdateThreadStatusResource, "/thread/update-status/<action>/"),
+    (LikeUnlikeThreadResource, "/thread/<action>/<int:id>/"),
+    (CommentThreadResource, "/thread/add-comment/<int:id>/"),
+    (MainCommentResource, "/comment/<int:id>/")
 )

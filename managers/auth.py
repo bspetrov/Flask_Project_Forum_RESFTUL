@@ -38,4 +38,4 @@ def verify_token(token):
         user_id, type_user = AuthManager.decode_token(token)
         return eval(f"{type_user}.query.filter_by(id={user_id}).first()")
     except Exception as ex:
-        return ex
+        raise Unauthorized("Invalid or missing token!")

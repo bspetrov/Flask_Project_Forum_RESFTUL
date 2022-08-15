@@ -8,7 +8,7 @@ from schemas.requests.auth import RegisterUserSchemaRequest, LoginUserSchemaRequ
 from utils.decorators import validate_schema
 
 
-class RegisterForumUserResource(Resource):
+class RegisterUserResource(Resource):
     @validate_schema(RegisterUserSchemaRequest)
     def post(self):
         data = request.get_json()
@@ -16,18 +16,15 @@ class RegisterForumUserResource(Resource):
         return {"token": token, "message": "Forum user registered successfully!"}, status.HTTP_201_CREATED
 
 
-class LoginForumUserResource(Resource):
+class LoginUserResource(Resource):
     @validate_schema(LoginUserSchemaRequest)
-    def post(self):
+    def post(self, type):
         data = request.get_json()
-        token = ForumUserManager.login(data)
-        return {"token": token, "message": "Forum user logged in successfully!"}, status.HTTP_200_OK
+        if type == "forum_user":
+            token = ForumUserManager.login(data)
 
+        elif type == "manager":
+            token = ForumManager.login(data)
 
-class LoginForumManagerResource(Resource):
-    @validate_schema(LoginUserSchemaRequest)
-    def post(self):
-        data = request.get_json()
-        token = ForumManager.login(data)
-        return {"token": token, "message": "Forum manager logged in successfully!"}, status.HTTP_200_OK
+        return {"token": token, "message": f"{type} in successfully!"}, status.HTTP_200_OK
 
