@@ -14,20 +14,15 @@ class ThreadManager:
 
     @staticmethod
     def get_all_threads():
-        all_threads = []
         try:
             all_threads_query = ThreadModel.query.all()
-            for thread in all_threads_query:
-                dict = ThreadSchemaResponse().dump(thread)
-                all_threads.append(dict)
-            return all_threads
+            return ThreadSchemaResponse(many=True).dump(all_threads_query)
         except Exception as e:
             return e
 
     @staticmethod
     def create_thread(thread_data, user):
         thread_data["forum_user_id"] = user.id
-
         try:
             thread = ThreadModel(**thread_data)
             db.session.add(thread)
@@ -53,26 +48,23 @@ class ThreadManager:
     @staticmethod
     def update_thread(thread_id, thread_data):
         current_user = auth.current_user()
-        try:
-            thread = ThreadModel.query.filter_by(id=thread_id).first()
-            if thread.forum_user_id == current_user.id:
-                ThreadModel.query.filter_by(id=thread_id).update(thread_data)
-                db.session.commit()
-                return thread
-            else:
-                raise Unauthorized("You are not the creator of the thread!")
-        except Exception:
-            raise NotFound("Couldn't find thread with this ID!")
+        thread = ThreadModel.query.filter_by(id=thread_id).first()
+        if thread.forum_user_id == current_user.id:
+            ThreadModel.query.filter_by(id=thread_id).update(thread_data)
+            db.session.commit()
+            return thread
+        else:
+            raise Unauthorized("You are not the creator of the thread!")
 
     @staticmethod
     def update_thread_status(thread_id, status):
-
-        try:
+        thread = ThreadModel.query.filter_by(id=thread_id).first()
+        if thread.status.value != status:
             thread_update_query = ThreadModel.query.filter_by(id=thread_id).update({"status": status})
             db.session.commit()
             return "Thread status was changed!"
-        except Exception as e:
-            return e
+        else:
+            raise NotAcceptable("Thread in this status already!")
 
     @staticmethod
     def thread_like_unlike(action, thread_id):
@@ -91,7 +83,7 @@ class ThreadManager:
             thread.likes -= 1
             thread.users_liked.remove(user)
 
-        if action_change == "impossible" and action == "dislike":
+        elif action_change == "impossible" and action == "dislike":
             raise NotAcceptable("You have not liked this thread!")
 
         elif action_change == "impossible" and action == "like":
@@ -99,3 +91,4 @@ class ThreadManager:
 
         db.session.commit()
         return thread
+

@@ -1,4 +1,4 @@
-from werkzeug.exceptions import Unauthorized, NotFound
+from werkzeug.exceptions import Unauthorized, NotFound, NotAcceptable
 
 from db import db
 from managers.auth import auth
@@ -18,10 +18,10 @@ class CommentManager:
     @staticmethod
     def get_all_comments(thread_id):
         try:
-            comment_query = ThreadCommentModel.query.filter_by(thread_id=id).all()
-            return comment_query
-        except Exception:
-            return "No comments available!"
+            all_comments_query = ThreadCommentModel.query.filter_by(thread_id=thread_id).all()
+            return CommentSchemaResponse(many=True).dump(all_comments_query)
+        except Exception as e:
+            return e
 
     @staticmethod
     def comment_thread(comment_data):
@@ -57,7 +57,7 @@ class CommentManager:
         try:
             comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
             if comment.forum_user_id == current_user.id:
-                ThreadCommentModel.query.filter_by(id=comment_id).update(data)
+                ThreadCommentModel.query.filter_by(id=comment_id).update(comment_data)
                 db.session.commit()
                 return comment
             else:
@@ -65,6 +65,30 @@ class CommentManager:
         except Exception:
             raise NotFound("Couldn't find comment with this ID!")
 
+    @staticmethod
+    def like_dislike_comment(action, comment_id):
+        user = auth.current_user()
+        liked_comments = user.liked_comments
+        action_change = "impossible"
+        comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
 
+        if action == "like" and comment not in liked_comments:
+            action_change = "possible"
+            comment.likes += 1
+            comment.users_liked.append(user)
+
+        elif action == "dislike" and comment in liked_comments:
+            action_change = "possible"
+            comment.likes -= 1
+            comment.users_liked.remove(user)
+
+        elif action_change == "impossible" and action == "dislike":
+            raise NotAcceptable("You have not liked this comment!")
+
+        elif action_change == "impossible" and action == "like":
+            raise NotAcceptable("You have liked this already!")
+
+        db.session.commit()
+        return comment
 
 

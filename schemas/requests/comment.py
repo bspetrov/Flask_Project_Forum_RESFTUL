@@ -3,4 +3,4 @@ from marshmallow import fields
 
 
 class CommentSchemaRequest(CommentBase):
-    attachment = fields.String(required=True)
+    attachment = fields.String(required=False)
