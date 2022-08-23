@@ -10,6 +10,7 @@ class ThreadSchemaResponse(ThreadBase):
     likes = fields.Int(required=True)
     created_on = fields.DateTime(required=True)
     thread_status = EnumField(ThreadState, by_value=True)
+    attachment = fields.URL(required=True)
 
 
 

@@ -17,7 +17,7 @@ class ThreadModel(db.Model):
     title = db.Column(db.String(300), nullable=False)
     category = db.Column(db.Enum(ThreadCategories), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    attachment = db.Column(db.String(300), nullable=False)
+    attachment = db.Column(db.String(255), nullable=True)
     status = db.Column(db.Enum(ThreadState), nullable=False, default=ThreadState.open)
     created_on = db.Column(db.DateTime, nullable=False, server_default=func.now())
     likes = db.Column(db.Integer, nullable=False, default=0)

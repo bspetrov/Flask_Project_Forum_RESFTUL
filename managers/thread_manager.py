@@ -1,9 +1,14 @@
+import uuid
+import os
+from constants import TEMP_FILE_FOLDER
 from db import db
 from models import ThreadModel, ThreadCommentModel
 from managers.auth import auth
 from werkzeug.exceptions import NotAcceptable, Unauthorized, NotFound
 
 from schemas.responses.thread import ThreadSchemaResponse
+from services.s3 import S3Service
+from utils.helpers import decode_file
 
 
 class ThreadManager:
@@ -23,15 +28,26 @@ class ThreadManager:
     @staticmethod
     def create_thread(thread_data, user):
         thread_data["forum_user_id"] = user.id
+        if "attachment" in thread_data:
+            try:
+                file_name = f"{str(uuid.uuid4())}.{thread_data['attachment_extension']}"
+                thread_data.pop("attachment_extension")
+                path = os.path.join(TEMP_FILE_FOLDER, file_name)
+                decode_file(path, thread_data["attachment"])
+                s3 = S3Service()
+                attachment_url = s3.upload_attachment(path, file_name)
+                thread_data["attachment"] = attachment_url
+                os.remove(path)
+            except Exception as e:
+                return e
         try:
             thread = ThreadModel(**thread_data)
             db.session.add(thread)
             db.session.commit()
-
             return thread
 
-        except Exception as e:
-            return e
+        except Exception:
+            pass
 
     @staticmethod
     def delete_thread(thread_id):

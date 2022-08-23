@@ -21,7 +21,7 @@ class MainThreadResource(Resource):
     """
     def get(self):
         threads = ThreadManager.get_all_threads()
-        return {"threads": threads}, status.HTTP_200_OK
+        return threads, status.HTTP_200_OK
 
     """
     Creates a thread, must be authenticated!

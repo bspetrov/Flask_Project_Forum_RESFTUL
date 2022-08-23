@@ -13,6 +13,11 @@ api = Api(app)
 migrate = Migrate(app, db)
 CORS(app)
 
+# @app.after_request
+# def return_resp(resp):
+    # db.session.commit()
+    # return resp
+
 [api.add_resource(*route_data) for route_data in routes]
 
 if __name__ == "__main__":
