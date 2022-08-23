@@ -21,3 +21,11 @@ class S3Service:
         except ClientError as ex:
             raise InternalServerError("S3 is not available at the moment")
 
+    def remove_attachment(self, key):
+        try:
+            self.s3.delete_object(Bucket=self.bucket, Key=key)
+            return "Object deleted!"
+        except ClientError as ex:
+            raise InternalServerError("S3 is not available at the moment!")
+
+

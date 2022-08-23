@@ -4,7 +4,7 @@ from constants import TEMP_FILE_FOLDER
 from db import db
 from models import ThreadModel, ThreadCommentModel
 from managers.auth import auth
-from werkzeug.exceptions import NotAcceptable, Unauthorized, NotFound
+from werkzeug.exceptions import NotAcceptable, Unauthorized, NotFound, InternalServerError
 
 from schemas.responses.thread import ThreadSchemaResponse
 from services.s3 import S3Service
@@ -28,26 +28,42 @@ class ThreadManager:
     @staticmethod
     def create_thread(thread_data, user):
         thread_data["forum_user_id"] = user.id
-        if "attachment" in thread_data:
+
+        if "attachment" in thread_data and "attachment_extension" in thread_data:
+            s3 = S3Service()
+            file_name = f"{str(uuid.uuid4())}.{thread_data['attachment_extension']}"
+            thread_data.pop("attachment_extension")
+            path = os.path.join(TEMP_FILE_FOLDER, file_name)
+
             try:
-                file_name = f"{str(uuid.uuid4())}.{thread_data['attachment_extension']}"
-                thread_data.pop("attachment_extension")
-                path = os.path.join(TEMP_FILE_FOLDER, file_name)
                 decode_file(path, thread_data["attachment"])
-                s3 = S3Service()
                 attachment_url = s3.upload_attachment(path, file_name)
-                thread_data["attachment"] = attachment_url
-                os.remove(path)
+                thread_data["attachmentz"] = attachment_url
+                thread = ThreadModel(**thread_data)
+                db.session.add(thread)
+                db.session.commit()
+                return thread
+
             except Exception as e:
-                return e
-        try:
+                s3.remove_attachment(file_name)
+                raise InternalServerError("Problems with submitted data data!")
+
+            finally:
+                os.remove(path)
+
+        elif "attachment" in thread_data and "attachment_extension" not in thread_data:
+            raise NotAcceptable("Please make sure to include both attachment and attachment extension if you want to "
+                                "attach a file!")
+
+        elif "attachment" not in thread_data and "attachment_extension" in thread_data:
+            raise NotAcceptable("Please make sure to include both attachment and attachment extension if you want to "
+                                "attach a file!")
+        else:
             thread = ThreadModel(**thread_data)
             db.session.add(thread)
             db.session.commit()
-            return thread
 
-        except Exception:
-            pass
+        return thread
 
     @staticmethod
     def delete_thread(thread_id):
