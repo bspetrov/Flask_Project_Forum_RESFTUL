@@ -46,7 +46,7 @@ class ThreadManager:
 
             except Exception as e:
                 s3.remove_attachment(file_name)
-                raise InternalServerError("Problems with submitted data data!")
+                raise InternalServerError("Problems with submitted data !")
 
             finally:
                 os.remove(path)
@@ -59,9 +59,12 @@ class ThreadManager:
             raise NotAcceptable("Please make sure to include both attachment and attachment extension if you want to "
                                 "attach a file!")
         else:
-            thread = ThreadModel(**thread_data)
-            db.session.add(thread)
-            db.session.commit()
+            try:
+                thread = ThreadModel(**thread_data)
+                db.session.add(thread)
+                db.session.commit()
+            except Exception:
+                raise InternalServerError("Problems with submitted data !")
 
         return thread
 
