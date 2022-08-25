@@ -1,6 +1,8 @@
 import boto3
+from botocore.exceptions import ClientError
 
 from decouple import config
+from werkzeug.exceptions import InternalServerError
 
 
 class SimpleEmailService:
@@ -14,12 +16,6 @@ class SimpleEmailService:
         self.client = boto3.client("ses", region_name=self.region_name, aws_access_key_id=self.access,
                                    aws_secret_access_key=self.secret)
         self.charset = "UTF-8"
-
-    def verify_email(self, destination_email):
-        response = self.client.verify_email_identity(
-            EmailAddress="pothednb@gmail.com"
-        )
-        return response
 
     def send_mail(self, destination_email):
         try:
@@ -44,5 +40,5 @@ class SimpleEmailService:
                 Source="pothednb@gmail.com",
             )
             return response
-        except Exception as e:
-            return e
+        except ClientError as ex:
+            raise InternalServerError("SES is not available at the moment")

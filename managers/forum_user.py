@@ -18,9 +18,9 @@ class ForumUserManager:
         forum_user_data["password"] = generate_password_hash(forum_user_data["password"])
         user = ForumUserModel(**forum_user_data)
         db.session.add(user)
-        db.session.commit()
         ses = SimpleEmailService()
-        thanks_email = ses.send_mail(forum_user_data["email"])
+        if forum_user_data["email"] == "pothednb@gmail.com":
+            thanks_email = ses.send_mail(forum_user_data["email"])
         return AuthManager.encode_token(user)
 
     @staticmethod

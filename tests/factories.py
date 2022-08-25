@@ -1,6 +1,7 @@
 import factory
+
 from db import db
-from models import ForumUserModel, UserRole, ForumManagerModel, ThreadModel, ThreadState, ThreadCategories
+from models import ForumUserModel, UserRole, ForumManagerModel
 
 
 class BaseFactory(factory.Factory):
@@ -36,6 +37,3 @@ class ManagerUserFactory(BaseFactory):
     last_name = factory.Faker("last_name")
     email = factory.Faker("email")
     role = UserRole.manager
-
-
-

@@ -126,7 +126,6 @@ class TestThread(TestCase):
                                      "to attach a file!"})
 
     def test_create_thread_schema_with_missing_attachment_extension_field(self):
-
         url = "/thread/"
         user = ForumUserFactory()
         token = generate_user_token(user)
@@ -298,7 +297,6 @@ class TestThread(TestCase):
         user_headers = {"Content-Type": "application/json", "Authorization": f"Bearer {user_token}"}
         manager_headers = {"Content-Type": "application/json", "Authorization": f"Bearer {manager_token}"}
 
-
         data = {
             "title": "Test title",
             "category": "gaming",
@@ -328,7 +326,6 @@ class TestThread(TestCase):
         user_headers = {"Content-Type": "application/json", "Authorization": f"Bearer {user_token}"}
         manager_headers = {"Content-Type": "application/json", "Authorization": f"Bearer {manager_token}"}
 
-
         data = {
             "title": "Test title",
             "category": "gaming",
@@ -345,7 +342,3 @@ class TestThread(TestCase):
         update = self.client.put(update_url, headers=manager_headers, json=update_data)
         assert update.status_code == 406
         self.assertEqual(update.json, {"message": "Thread in this status already!"})
-
-
-
-

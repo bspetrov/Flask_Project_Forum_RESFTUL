@@ -19,4 +19,3 @@ class ThreadCategories(Enum):
     politics = "politics"
     social_media = "social media"
     tech_help = "technical help"
-

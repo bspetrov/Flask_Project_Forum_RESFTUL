@@ -238,7 +238,6 @@ class TestComment(TestCase):
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
         headers_two = {"Content-Type": "application/json", "Authorization": f"Bearer {token_two}"}
 
-
         comment_data = {
             "description": "Checking out and entering another comment!"
         }
@@ -257,8 +256,3 @@ class TestComment(TestCase):
 
         delete_comment = self.client.delete(delete_url, headers=headers_two)
         self.assert401(delete_comment)
-
-
-
-
-

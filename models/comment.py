@@ -3,9 +3,9 @@ from sqlalchemy import func
 from db import db
 
 user_liked_comments = db.Table("user_liked_comments",
-                              db.Column("comment_id", db.Integer, db.ForeignKey("thread_comment.id")),
-                              db.Column("user_id", db.Integer, db.ForeignKey("forum_users.id"))
-                              )
+                               db.Column("comment_id", db.Integer, db.ForeignKey("thread_comment.id")),
+                               db.Column("user_id", db.Integer, db.ForeignKey("forum_users.id"))
+                               )
 
 
 class ThreadCommentModel(db.Model):

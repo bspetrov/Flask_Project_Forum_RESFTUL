@@ -27,5 +27,3 @@ class S3Service:
             return "Object deleted!"
         except ClientError as ex:
             raise InternalServerError("S3 is not available at the moment!")
-
-

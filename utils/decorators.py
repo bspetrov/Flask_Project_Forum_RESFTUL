@@ -13,7 +13,9 @@ def validate_schema(schema_name):
             if not errors:
                 return func(*args, **kwargs)
             raise BadRequest(errors)
+
         return wrapper
+
     return decorated_function
 
 
@@ -24,5 +26,7 @@ def permission_required(role):
             if not current_user.role == role:
                 raise Forbidden("Permission denied!")
             return func(*args, **kwargs)
+
         return wrapper
+
     return decorated_function

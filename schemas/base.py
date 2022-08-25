@@ -1,7 +1,4 @@
 from marshmallow import Schema, fields, validate
-from marshmallow_enum import EnumField
-
-from models import ThreadCategories
 
 
 class AuthBase(Schema):

@@ -3,7 +3,6 @@ from sqlalchemy import func
 from db import db
 from models.enums import ThreadState, ThreadCategories
 
-
 user_liked_threads = db.Table("user_liked_threads",
                               db.Column("thread_id", db.Integer, db.ForeignKey("threads.id")),
                               db.Column("user_id", db.Integer, db.ForeignKey("forum_users.id"))
@@ -24,6 +23,3 @@ class ThreadModel(db.Model):
     users_liked = db.relationship("ForumUserModel", secondary=user_liked_threads, backref="liked_threads")
     comments = db.relationship("ThreadCommentModel", backref='thread_comment', lazy='dynamic')
     forum_user_id = db.Column(db.Integer, db.ForeignKey("forum_users.id"), nullable=False)
-
-
-

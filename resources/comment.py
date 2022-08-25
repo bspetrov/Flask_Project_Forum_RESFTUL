@@ -5,10 +5,7 @@ from werkzeug.exceptions import NotAcceptable
 
 from managers.auth import auth
 from managers.comment_manager import CommentManager
-from schemas.requests.comment import CommentSchemaRequest
 from schemas.responses.comment import CommentSchemaResponse
-from schemas.responses.thread import ThreadSchemaResponse
-from utils.decorators import validate_schema
 
 
 class SingleCommentResource(Resource):

@@ -1,8 +1,7 @@
 from flask import request
 from flask_api import status
 from flask_restful import Resource
-from werkzeug.exceptions import Unauthorized, NotAcceptable
-
+from werkzeug.exceptions import NotAcceptable
 
 from managers.auth import auth
 from managers.comment_manager import CommentManager
@@ -10,7 +9,6 @@ from managers.thread_manager import ThreadManager
 from models import UserRole
 from schemas.requests.comment import CommentSchemaRequest
 from schemas.requests.thread import ThreadSchemaRequest
-from schemas.responses.comment import CommentSchemaResponse
 from schemas.responses.thread import ThreadSchemaResponse
 from utils.decorators import validate_schema, permission_required
 
@@ -19,6 +17,7 @@ class MainThreadResource(Resource):
     """
     Gets all threads!
     """
+
     def get(self):
         threads = ThreadManager.get_all_threads()
         return threads, status.HTTP_200_OK
@@ -26,6 +25,7 @@ class MainThreadResource(Resource):
     """
     Creates a thread, must be authenticated!
     """
+
     @auth.login_required
     @validate_schema(ThreadSchemaRequest)
     def post(self):
@@ -39,8 +39,9 @@ class SingleThreadActionResource(Resource):
     """
     Gets a single thread with all its comments!
     """
+
     @auth.login_required
-    def get(self,  action, id):
+    def get(self, action, id):
         if action == "get":
             try:
                 thread = ThreadManager.get_thread(id)
@@ -57,6 +58,7 @@ class SingleThreadActionResource(Resource):
     """
     Submits a comment for the thread!
     """
+
     @auth.login_required
     @validate_schema(CommentSchemaRequest)
     def post(self, action, id):
@@ -75,6 +77,7 @@ class SingleThreadActionResource(Resource):
             raise NotAcceptable(f"Action {action} is not acceptable!")
 
     "This put method is used to like, dislike, update thread data"
+
     @auth.login_required
     def put(self, action, id):
         if action == "like" or action == "dislike":
@@ -109,7 +112,3 @@ class ManagerThreadActionResource(Resource):
             return modified_thread
         else:
             raise NotAcceptable(f"Action {action} is not acceptable!")
-
-
-
-

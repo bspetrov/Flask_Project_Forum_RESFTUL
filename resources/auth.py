@@ -27,4 +27,3 @@ class LoginUserResource(Resource):
             token = ForumManager.login(data)
 
         return {"token": token, "message": f"{type} in successfully!"}, status.HTTP_200_OK
-

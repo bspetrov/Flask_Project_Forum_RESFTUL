@@ -1,5 +1,6 @@
-from schemas.base import CommentBase
 from marshmallow import fields
+
+from schemas.base import CommentBase
 
 
 class CommentSchemaRequest(CommentBase):

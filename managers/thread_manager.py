@@ -1,11 +1,12 @@
-import uuid
 import os
+import uuid
+
+from werkzeug.exceptions import NotAcceptable, Unauthorized, NotFound, BadRequest
+
 from constants import TEMP_FILE_FOLDER
 from db import db
-from models import ThreadModel, ThreadCommentModel
 from managers.auth import auth
-from werkzeug.exceptions import NotAcceptable, Unauthorized, NotFound, InternalServerError, BadRequest
-
+from models import ThreadModel
 from schemas.responses.thread import ThreadSchemaResponse
 from services.s3 import S3Service
 from utils.helpers import decode_file

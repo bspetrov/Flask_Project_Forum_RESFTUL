@@ -12,8 +12,8 @@ class CommentManager:
         try:
             comment_query = ThreadCommentModel.query.filter_by(id=data_id).first()
             return comment_query
-        except Exception:
-            return Exception
+        except Exception as e:
+            return e
 
     @staticmethod
     def get_all_comments(thread_id):
@@ -30,7 +30,7 @@ class CommentManager:
             thread_model = ThreadModel.query.filter_by(id=comment_model.thread_id).first()
             thread_model.comments.append(comment_model)
             db.session.add(comment_model)
-            db.session.commit()
+            db.session.flush()
             return thread_model
 
         except Exception as e:
@@ -41,15 +41,15 @@ class CommentManager:
         current_user = auth.current_user()
         try:
             comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
+            if comment.forum_user_id == current_user.id:
+                comment_model = ThreadCommentModel.query.filter_by(id=comment_id).first()
+                db.session.delete(comment_model)
+                db.session.flush()
+                return "Comment has been deleted!"
+            else:
+                raise Unauthorized("Only the comment creator can delete his comments!")
         except Exception:
-            raise NotFound("Couldn't find comment with this id!")
-        if comment.forum_user_id == current_user.id:
-            comment_model = ThreadCommentModel.query.filter_by(id=comment_id).first()
-            db.session.delete(comment_model)
-            db.session.commit()
-            return "Comment has been deleted!"
-        else:
-            raise Unauthorized("Only the comment creator can delete his comments!")
+            raise NotFound("No comment with this ID!")
 
     @staticmethod
     def edit_comment(comment_data, comment_id):
@@ -58,7 +58,7 @@ class CommentManager:
             comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
             if comment.forum_user_id == current_user.id:
                 ThreadCommentModel.query.filter_by(id=comment_id).update(comment_data)
-                db.session.commit()
+                db.session.flush()
                 return comment
             else:
                 raise Unauthorized("You are not the creator of the thread!")
@@ -88,7 +88,5 @@ class CommentManager:
         elif action_change == "impossible" and action == "like":
             raise NotAcceptable("You have liked this already!")
 
-        db.session.commit()
+        db.session.flush()
         return comment
-
-

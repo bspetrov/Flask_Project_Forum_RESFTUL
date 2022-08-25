@@ -1,7 +1,10 @@
+from unittest.mock import patch
+
 from flask_testing import TestCase
 
 from config import create_app
 from db import db
+from services.ses import SimpleEmailService
 from tests.factories import ForumUserFactory
 from tests.helpers import generate_user_token
 
@@ -34,12 +37,12 @@ class TestApp(TestCase):
         db.drop_all()
 
     def iterate_endpoints(
-        self,
-        endpoints_data,
-        status_code_method,
-        expected_resp_body,
-        headers=None,
-        payload=None,
+            self,
+            endpoints_data,
+            status_code_method,
+            expected_resp_body,
+            headers=None,
+            payload=None,
     ):
         if not headers:
             headers = {}
@@ -58,6 +61,24 @@ class TestApp(TestCase):
                 resp = self.client.delete(url, headers=headers)
             status_code_method(resp)
             self.assertEqual(resp.json, expected_resp_body)
+
+    @patch.object(SimpleEmailService, "send_mail", return_value="Mail sent")
+    def test_register_email_send(self, ses_mock):
+        url = "/register/"
+
+        data = {
+            "username": "Test",
+            "password": "Test123123123",
+            "first_name": "Testing",
+            "last_name": "Testov",
+            "email": "email@email.com"
+        }
+
+        headers = {"Content-Type": "application/json"}
+
+        resp = self.client.post(url, headers=headers, json=data)
+        assert resp.status_code == 201
+
 
     def test_login_required(self):
         self.iterate_endpoints(LOGIN_REQUIRED_ENDPOINTS, self.assert_401, {"message": "Missing token!"})
@@ -86,5 +107,3 @@ class TestApp(TestCase):
 
             self.assert_403(resp)
             self.assertEqual(resp.json, {"message": "Permission denied!"})
-
-
