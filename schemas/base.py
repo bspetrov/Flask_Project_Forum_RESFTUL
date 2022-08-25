@@ -11,7 +11,7 @@ class AuthBase(Schema):
 
 class ThreadBase(Schema):
     title = fields.Str(required=True)
-    category = EnumField(ThreadCategories, by_value=True)
+    category = fields.Str(required=True)
     description = fields.Str(required=True)
 
 

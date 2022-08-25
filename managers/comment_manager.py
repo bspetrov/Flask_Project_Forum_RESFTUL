@@ -41,15 +41,15 @@ class CommentManager:
         current_user = auth.current_user()
         try:
             comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
-            if comment.forum_user_id == current_user.id:
-                comment_model = ThreadCommentModel.query.filter_by(id=comment_id).first()
-                db.session.delete(comment_model)
-                db.session.commit()
-                return "Comment has been deleted!"
-            else:
-                raise Unauthorized("Only the comment creator can delete his comments!")
         except Exception:
             raise NotFound("Couldn't find comment with this id!")
+        if comment.forum_user_id == current_user.id:
+            comment_model = ThreadCommentModel.query.filter_by(id=comment_id).first()
+            db.session.delete(comment_model)
+            db.session.commit()
+            return "Comment has been deleted!"
+        else:
+            raise Unauthorized("Only the comment creator can delete his comments!")
 
     @staticmethod
     def edit_comment(comment_data, comment_id):

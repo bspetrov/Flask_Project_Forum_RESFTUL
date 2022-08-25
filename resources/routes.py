@@ -10,5 +10,6 @@ routes = (
     (LoginUserResource, "/login/<type>/"),
     (MainThreadResource, "/thread/"),
     (SingleThreadActionResource, "/thread/<action>/<int:id>/"),
-    (ManagerThreadActionResource, "/thread/manager/<action>/<int:id>/")
+    (ManagerThreadActionResource, "/thread/manager/<action>/<int:id>/"),
+    (SingleCommentResource, "/comment/<action>/<int:id>/")
 )

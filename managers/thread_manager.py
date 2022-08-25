@@ -4,7 +4,7 @@ from constants import TEMP_FILE_FOLDER
 from db import db
 from models import ThreadModel, ThreadCommentModel
 from managers.auth import auth
-from werkzeug.exceptions import NotAcceptable, Unauthorized, NotFound, InternalServerError
+from werkzeug.exceptions import NotAcceptable, Unauthorized, NotFound, InternalServerError, BadRequest
 
 from schemas.responses.thread import ThreadSchemaResponse
 from services.s3 import S3Service
@@ -38,35 +38,30 @@ class ThreadManager:
             try:
                 decode_file(path, thread_data["attachment"])
                 attachment_url = s3.upload_attachment(path, file_name)
-                thread_data["attachmentz"] = attachment_url
+                thread_data["attachment"] = attachment_url
                 thread = ThreadModel(**thread_data)
                 db.session.add(thread)
-                db.session.commit()
+                db.session.flush()
                 return thread
 
-            except Exception as e:
+            except Exception:
                 s3.remove_attachment(file_name)
-                raise InternalServerError("Problems with submitted data !")
-
+                raise BadRequest("Problems with submitted data !")
             finally:
                 os.remove(path)
 
         elif "attachment" in thread_data and "attachment_extension" not in thread_data:
-            raise NotAcceptable("Please make sure to include both attachment and attachment extension if you want to "
-                                "attach a file!")
+            raise BadRequest("Please make sure to include both attachment and attachment extension if you want to "
+                             "attach a file!")
 
         elif "attachment" not in thread_data and "attachment_extension" in thread_data:
-            raise NotAcceptable("Please make sure to include both attachment and attachment extension if you want to "
-                                "attach a file!")
+            raise BadRequest("Please make sure to include both attachment and attachment extension if you want to "
+                             "attach a file!")
         else:
-            try:
-                thread = ThreadModel(**thread_data)
-                db.session.add(thread)
-                db.session.commit()
-            except Exception:
-                raise InternalServerError("Problems with submitted data !")
-
-        return thread
+            thread = ThreadModel(**thread_data)
+            db.session.add(thread)
+            db.session.flush()
+            return thread
 
     @staticmethod
     def delete_thread(thread_id):
@@ -74,7 +69,7 @@ class ThreadManager:
         try:
             thread = ThreadModel.query.filter_by(id=thread_id).first()
             db.session.delete(thread)
-            db.session.commit()
+            db.session.flush()
             return "Thread deleted!"
 
         except Exception as e:
@@ -86,7 +81,7 @@ class ThreadManager:
         thread = ThreadModel.query.filter_by(id=thread_id).first()
         if thread.forum_user_id == current_user.id:
             ThreadModel.query.filter_by(id=thread_id).update(thread_data)
-            db.session.commit()
+            db.session.flush()
             return thread
         else:
             raise Unauthorized("You are not the creator of the thread!")
@@ -96,7 +91,7 @@ class ThreadManager:
         thread = ThreadModel.query.filter_by(id=thread_id).first()
         if thread.status.value != status:
             thread_update_query = ThreadModel.query.filter_by(id=thread_id).update({"status": status})
-            db.session.commit()
+            db.session.flush()
             return "Thread status was changed!"
         else:
             raise NotAcceptable("Thread in this status already!")
@@ -124,6 +119,5 @@ class ThreadManager:
         elif action_change == "impossible" and action == "like":
             raise NotAcceptable("You have liked this already!")
 
-        db.session.commit()
+        db.session.flush()
         return thread
-
