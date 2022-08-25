@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from db import db
 from managers.auth import AuthManager
 from models.user import ForumUserModel
+from services.ses import SimpleEmailService
 
 
 class ForumUserManager:
@@ -18,6 +19,8 @@ class ForumUserManager:
         user = ForumUserModel(**forum_user_data)
         db.session.add(user)
         db.session.commit()
+        ses = SimpleEmailService()
+        thanks_email = ses.send_mail(forum_user_data["email"])
         return AuthManager.encode_token(user)
 
     @staticmethod
