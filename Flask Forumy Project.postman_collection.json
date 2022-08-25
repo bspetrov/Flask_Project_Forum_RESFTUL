@@ -1,0 +1,667 @@
+{
+	"info": {
+		"_postman_id": "5a5d52cd-c92e-455d-be2c-70bb0d0fd6da",
+		"name": "Flask Forumy Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Forum User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"gamer_boy\", \"password\": \"gamer_boy\", \"first_name\": \"Gamer\", \"last_name\": \"Boy\", \"email\": \"gamer_boy@abv.bg\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/register/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Forum User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"gamer_boy\", \"password\": \"gamer_boy\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/login/forum_user/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"login",
+								"forum_user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Forum Manager User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsImV4cCI6MTY2MDQyMDYxN30.a8GikMbdcaged8SDwGw-N5uyBwEpDdV3DeSmzhUtecg",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"test_manager\", \"password\": \"Testpassword123!*\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/login/manager/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"login",
+								"manager",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Thread",
+			"item": [
+				{
+					"name": "Get all threads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Thread",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"title\":\"Do you like Call of Duty?\", \"category\": \"gaming\", \"description\":\"Hi Guys, do you like Call of Duty?\", \"attachment\":\"VGhpcyBpcyBhIHRlc3QgZmlsZQ==\", \"attachment_extension\": \"txt\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Thread",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/get/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								"get",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Comment thread",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"description\": \"Checking out and entering another comment!\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/comment/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								"comment",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Thread",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/like/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								"like",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove like",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/dislike/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								"dislike",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update thread",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"description\": \"Edited Number 1231231232aaaaaaa\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/update-data/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								"update-data",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete thread",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/delete/7/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								"delete",
+								"7",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update thread status",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\": \"closed\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/thread/manager/update-status/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"thread",
+								"manager",
+								"update-status",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "Get Single Comment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MTQ2MzQ1MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.BEib8jAX8TGpoXQRaDhxxLFKTPG-DWHH8MZeG6dM3ic",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/comment/get/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"comment",
+								"get",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Single Comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMsImV4cCI6MTY2MDc1NDgyNywidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.sUGxweNDNefVL6bYixYnJiXf4LmPUZb0mm3ABWVTddQ",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"description\": \"Editing my comment!\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/comment/edit/38/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"comment",
+								"edit",
+								"38",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like a comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImV4cCI6MTY2MDc0OTY2MCwidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.w8qZ0LexJB-gOzjrAU8ccWGV501WqURMUeRi4FH87vI",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/comment/like/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"comment",
+								"like",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove like from comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImV4cCI6MTY2MDY5MTY4MywidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.zYt_1YtND_GQXFdJcli929pDP5H19cMIAJlT8II3yhc",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/comment/dislike/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"comment",
+								"dislike",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Single Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImV4cCI6MTY2MDYwODkyMywidHlwZSI6IkZvcnVtVXNlck1vZGVsIn0.Kfar9b5J2acD3OFT92PW1DHI1hcV03itcSAE248qtws",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/comment/delete/11/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"comment",
+								"delete",
+								"11",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
