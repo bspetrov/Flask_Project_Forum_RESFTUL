@@ -9,61 +9,57 @@ from schemas.responses.comment import CommentSchemaResponse
 class CommentManager:
     @staticmethod
     def get_comment(data_id):
-        try:
-            comment_query = ThreadCommentModel.query.filter_by(id=data_id).first()
+        comment_query = ThreadCommentModel.query.filter_by(id=data_id).first()
+        if comment_query:
             return comment_query
-        except Exception as e:
-            return e
+        else:
+            raise NotFound("No thread found with this ID!")
 
     @staticmethod
     def get_all_comments(thread_id):
-        try:
-            all_comments_query = ThreadCommentModel.query.filter_by(thread_id=thread_id).all()
+        all_comments_query = ThreadCommentModel.query.filter_by(thread_id=thread_id).all()
+        if all_comments_query:
             return CommentSchemaResponse(many=True).dump(all_comments_query)
-        except Exception as e:
-            return e
+        else:
+            return "No comments available!"
 
     @staticmethod
     def comment_thread(comment_data):
-        try:
+        thread_model = ThreadModel.query.filter_by(id=comment_data["thread_id"]).first()
+        if thread_model:
             comment_model = ThreadCommentModel(**comment_data)
-            thread_model = ThreadModel.query.filter_by(id=comment_model.thread_id).first()
             thread_model.comments.append(comment_model)
             db.session.add(comment_model)
             db.session.flush()
             return thread_model
-
-        except Exception as e:
-            return e
+        raise NotFound("No thread found with this ID!")
 
     @staticmethod
     def delete_comment(comment_id):
         current_user = auth.current_user()
-        try:
-            comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
-            if comment.forum_user_id == current_user.id:
-                comment_model = ThreadCommentModel.query.filter_by(id=comment_id).first()
-                db.session.delete(comment_model)
-                db.session.flush()
-                return "Comment has been deleted!"
-            else:
-                raise Unauthorized("Only the comment creator can delete his comments!")
-        except Exception:
+        comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
+        if comment and comment.forum_user_id == current_user.id:
+            comment_model = ThreadCommentModel.query.filter_by(id=comment_id).first()
+            db.session.delete(comment_model)
+            db.session.flush()
+            return "Comment has been deleted!"
+        elif comment and comment.forum_user_id != current_user.id:
+            raise Unauthorized("Only the comment creator can delete his comments!")
+        elif not comment:
             raise NotFound("No comment with this ID!")
 
     @staticmethod
     def edit_comment(comment_data, comment_id):
         current_user = auth.current_user()
-        try:
-            comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
-            if comment.forum_user_id == current_user.id:
-                ThreadCommentModel.query.filter_by(id=comment_id).update(comment_data)
-                db.session.flush()
-                return comment
-            else:
-                raise Unauthorized("You are not the creator of the thread!")
-        except Exception:
-            raise NotFound("Couldn't find comment with this ID!")
+        comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
+        if comment and comment.forum_user_id == current_user.id:
+            ThreadCommentModel.query.filter_by(id=comment_id).update(comment_data)
+            db.session.flush()
+            return comment
+        elif comment and comment.forum_user_id != current_user.id:
+            raise Unauthorized("You are not the creator of the thread!")
+        elif not comment:
+            raise NotFound("No comment with this ID!")
 
     @staticmethod
     def like_dislike_comment(action, comment_id):
@@ -72,21 +68,24 @@ class CommentManager:
         action_change = "impossible"
         comment = ThreadCommentModel.query.filter_by(id=comment_id).first()
 
-        if action == "like" and comment not in liked_comments:
+        if comment and action == "like" and comment not in liked_comments:
             action_change = "possible"
             comment.likes += 1
             comment.users_liked.append(user)
 
-        elif action == "dislike" and comment in liked_comments:
+        elif comment and action == "dislike" and comment in liked_comments:
             action_change = "possible"
             comment.likes -= 1
             comment.users_liked.remove(user)
 
-        elif action_change == "impossible" and action == "dislike":
+        elif comment and action_change == "impossible" and action == "dislike":
             raise NotAcceptable("You have not liked this comment!")
 
-        elif action_change == "impossible" and action == "like":
+        elif comment and action_change == "impossible" and action == "like":
             raise NotAcceptable("You have liked this already!")
+
+        elif not comment:
+            raise NotFound("No comment with this ID!")
 
         db.session.flush()
         return comment

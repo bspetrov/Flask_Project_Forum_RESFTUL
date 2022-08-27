@@ -43,15 +43,12 @@ class SingleThreadActionResource(Resource):
     @auth.login_required
     def get(self, action, id):
         if action == "get":
-            try:
-                thread = ThreadManager.get_thread(id)
-                comments = CommentManager.get_all_comments(id)
-                return {
-                    "thread": ThreadSchemaResponse().dump(thread),
-                    "comments": comments
-                }
-            except Exception:
-                return status.HTTP_404_NOT_FOUND
+            thread = ThreadManager.get_thread(id)
+            comments = CommentManager.get_all_comments(id)
+            return {
+                "thread": ThreadSchemaResponse().dump(thread),
+                "comments": comments
+            }
         else:
             raise NotAcceptable(f"Action {action} is not acceptable!")
 

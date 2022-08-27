@@ -11,6 +11,14 @@ from services.s3 import S3Service
 from tests.factories import ForumUserFactory, ManagerUserFactory
 from tests.helpers import generate_user_token, encoded_file, encoded_file_extension, mock_uuid
 
+THREAD_ENDPOINTS = (
+    ("/thread/get/1/", "get"),
+    ("/thread/comment/1/", "post"),
+    ("/thread/like/1/", "put"),
+    ("/thread/dislike/1/", "put"),
+    ("/thread/update-data/1/", "put"),
+    ("/thread/delete/1/", "delete"),
+)
 
 class TestThread(TestCase):
 
@@ -342,3 +350,30 @@ class TestThread(TestCase):
         update = self.client.put(update_url, headers=manager_headers, json=update_data)
         assert update.status_code == 406
         self.assertEqual(update.json, {"message": "Thread in this status already!"})
+
+    def test_missing_thread_with_given_id(self):
+        user = ForumUserFactory()
+        token = generate_user_token(user)
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
+
+        for url, method in THREAD_ENDPOINTS:
+            if url == "/thread/comment/1/" or url == "/thread/update-data/1/":
+                data = {
+                    "description": "Test description"
+                }
+                resp = eval(f"self.client.{method}('{url}', headers={headers}, json={data})")
+            elif url == "/thread/delete/1/":
+                user = ManagerUserFactory()
+                token = generate_user_token(user)
+                headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
+                resp = eval(f"self.client.{method}('{url}', headers={headers})")
+            else:
+                resp = eval(f"self.client.{method}('{url}', headers={headers})")
+            self.assert_404(resp)
+            self.assertEqual(resp.json, {"message": "No thread found with this ID!"})
+
+
+
+
+
+

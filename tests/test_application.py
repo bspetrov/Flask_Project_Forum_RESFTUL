@@ -79,7 +79,6 @@ class TestApp(TestCase):
         resp = self.client.post(url, headers=headers, json=data)
         assert resp.status_code == 201
 
-
     def test_login_required(self):
         self.iterate_endpoints(LOGIN_REQUIRED_ENDPOINTS, self.assert_401, {"message": "Missing token!"})
 
