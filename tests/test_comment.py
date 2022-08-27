@@ -5,6 +5,14 @@ from db import db
 from tests.factories import ForumUserFactory
 from tests.helpers import generate_user_token
 
+COMMENT_ENDPOINTS = (
+    ("/comment/get/46/", "get"),
+    ("/comment/edit/46/", "put"),
+    ("/comment/like/46/", "put"),
+    ("/comment/dislike/46/", "put"),
+    ("/comment/delete/46/", "delete")
+)
+
 
 class TestComment(TestCase):
 
@@ -256,3 +264,21 @@ class TestComment(TestCase):
 
         delete_comment = self.client.delete(delete_url, headers=headers_two)
         self.assert401(delete_comment)
+
+    def test_missing_comment_with_given_id(self):
+        user = ForumUserFactory()
+        token = generate_user_token(user)
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
+
+        for url, method in COMMENT_ENDPOINTS:
+            if url == "/comment/edit/46/":
+                data = {
+                    "description": "Test!"
+                }
+                resp = eval(f"self.client.{method}('{url}', headers={headers}, json={data})")
+            else:
+                resp = eval(f"self.client.{method}('{url}', headers={headers})")
+
+            self.assert_404(resp)
+            self.assertEqual(resp.json, {"message": "No comment with this ID!"})
+

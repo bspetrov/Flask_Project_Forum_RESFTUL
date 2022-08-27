@@ -13,7 +13,7 @@ class CommentManager:
         if comment_query:
             return comment_query
         else:
-            raise NotFound("No thread found with this ID!")
+            raise NotFound("No comment with this ID!")
 
     @staticmethod
     def get_all_comments(thread_id):
