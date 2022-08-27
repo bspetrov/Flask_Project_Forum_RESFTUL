@@ -4,5 +4,6 @@ from marshmallow import fields
 
 class CommentSchemaResponse(CommentBase):
     id = fields.Int(required=True)
+    forum_user_id = fields.Int(required=True)
     created_on = fields.DateTime(required=True)
     thread = fields.String(required=True)
